@@ -15,11 +15,43 @@ small_cap_keys = [
     'z',
     ]
 
+left_top_keys = [
+    'q', 'w', 'e', 'r', 't'
+]
+
+left_middle_keys = [
+    'a', 's', 'd', 'f', 'g'
+]
+
+left_bottom_keys = [
+    'z', 'x', 'c', 'v', 'b'
+]
+
+left_keys = left_top_keys + left_middle_keys + left_bottom_keys
+
+right_top_keys = [
+    'y', 'u', 'i', 'o', 'p'
+]
+
+right_middle_keys = [
+    'h', 'j', 'k', 'l', ';'
+]
+
+right_bottom_keys = [
+    'n', 'm', ',', '.', '/'
+]
+
+right_keys = right_top_keys + right_middle_keys + right_bottom_keys
+
+all_keys = left_keys + right_keys
+
+
 RED = '\033[31m'
 GREEN = '\033[32m'
 END = '\033[0m'
 
 DEFAULT_TYPE_NUM = 20
+DEFAULT_TYPE_KEY = 's'
 TYPE_LOG_NAME = "touch_type.csv"
 RESULT_LOG_NAME = "touch_result.csv"
 
@@ -28,19 +60,27 @@ RESULT_LOG_NAME = "touch_result.csv"
 # -------------------------------------------------------------------
 argp = argparse.ArgumentParser(description='default')
 argp.add_argument('-n', '--num', help='number of practice types')
+argp.add_argument('-k', '--key', help='practice key types')
 args = argp.parse_args()
 if args.num:
     type_num = int(args.num)
 else:
     type_num = DEFAULT_TYPE_NUM
 
+# select practice keys
+if args.key == 's':
+    test_keys = small_cap_keys
+elif args.key == 'l':
+    test_keys = left_keys
+elif args.key == 'r':
+    test_keys = right_keys
+else:
+    test_keys = small_cap_keys
+
 
 print("-"*80)
 print(f"touch typing practice ({type_num} charactors)")
 print("-"*80)
-
-# select practice keys
-keys = small_cap_keys
 
 while True:
     print("Press space to strat, press 'Q' to end.")
@@ -55,7 +95,7 @@ while True:
 
             time_start = time.time() # 時間計測開始
             for i in range(type_num):
-                test_key = random.choice(small_cap_keys)
+                test_key = random.choice(test_keys)
                 print(f"{test_key}")
                 print('--> ', end="")
                 input_key = readchar.readkey()
