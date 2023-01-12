@@ -6,7 +6,7 @@ import random
 import readchar
 import time
 
-keys = [
+small_cap_keys = [    
     'a', 'b', 'c', 'd', 'e',
     'f', 'g', 'h', 'i', 'j',
     'k', 'l', 'm', 'n', 'o',
@@ -24,7 +24,7 @@ TYPE_LOG_NAME = "touch_type.csv"
 RESULT_LOG_NAME = "touch_result.csv"
 
 # -------------------------------------------------------------------
-# 引数を取得 [-f force recreate feature parameter]
+# parse and get command options
 # -------------------------------------------------------------------
 argp = argparse.ArgumentParser(description='default')
 argp.add_argument('-n', '--num', help='number of practice types')
@@ -34,9 +34,13 @@ if args.num:
 else:
     type_num = DEFAULT_TYPE_NUM
 
+
 print("-"*80)
 print(f"touch typing practice ({type_num} charactors)")
 print("-"*80)
+
+# select practice keys
+keys = small_cap_keys
 
 while True:
     print("Press space to strat, press 'Q' to end.")
@@ -51,7 +55,7 @@ while True:
 
             time_start = time.time() # 時間計測開始
             for i in range(type_num):
-                test_key = random.choice(keys)
+                test_key = random.choice(small_cap_keys)
                 print(f"{test_key}")
                 print('--> ', end="")
                 input_key = readchar.readkey()
