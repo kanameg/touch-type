@@ -1,2 +1,4 @@
 touch_result.csv
 touch_type.csv
+__pycache__/
+.mypy_cache/
