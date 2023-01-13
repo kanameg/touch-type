@@ -2,49 +2,11 @@
 import argparse
 import csv
 from datetime import datetime, date
+import json
+from pprint import pprint
 import random
 import readchar
 import time
-
-small_cap_keys = [    
-    'a', 'b', 'c', 'd', 'e',
-    'f', 'g', 'h', 'i', 'j',
-    'k', 'l', 'm', 'n', 'o',
-    'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y',
-    'z',
-    ]
-
-left_top_keys = [
-    'q', 'w', 'e', 'r', 't'
-]
-
-left_middle_keys = [
-    'a', 's', 'd', 'f', 'g'
-]
-
-left_bottom_keys = [
-    'z', 'x', 'c', 'v', 'b'
-]
-
-left_keys = left_top_keys + left_middle_keys + left_bottom_keys
-
-right_top_keys = [
-    'y', 'u', 'i', 'o', 'p'
-]
-
-right_middle_keys = [
-    'h', 'j', 'k', 'l', ';'
-]
-
-right_bottom_keys = [
-    'n', 'm', ',', '.', '/'
-]
-
-right_keys = right_top_keys + right_middle_keys + right_bottom_keys
-
-all_keys = left_keys + right_keys
-
 
 RED = '\033[31m'
 GREEN = '\033[32m'
@@ -60,29 +22,27 @@ RESULT_LOG_NAME = "touch_result.csv"
 # -------------------------------------------------------------------
 argp = argparse.ArgumentParser(description='default')
 argp.add_argument('-n', '--num', help='number of practice types')
-argp.add_argument('-k', '--key', help='practice key types')
 args = argp.parse_args()
 if args.num:
     type_num = int(args.num)
 else:
     type_num = DEFAULT_TYPE_NUM
 
-# select practice keys
-if args.key == 's':
-    test_keys = small_cap_keys
-elif args.key == 'l':
-    test_keys = left_keys
-elif args.key == 'r':
-    test_keys = right_keys
-else:
-    test_keys = small_cap_keys
+# 練習文字の読み込み
+with open('alphabet.json', 'r') as f:
+    test_chars_dict = json.load(f)
+    test_chars = list(test_chars_dict.keys())
 
 
-print("-"*80)
-print(f"touch typing practice ({type_num} charactors)")
-print("-"*80)
+def header_print(type_num):
+    """
+    """
+    print("-"*80)
+    print(f"touch typing practice ({type_num} charactors)")
+    print("-"*80)
 
 while True:
+    header_print(type_num)
     print("Press space to strat, press 'Q' to end.")
     command_key = readchar.readkey()
 
@@ -95,12 +55,15 @@ while True:
 
             time_start = time.time() # 時間計測開始
             for i in range(type_num):
-                test_key = random.choice(test_keys)
-                print(f"{test_key}")
+                test_char = random.choice(test_chars)
+                answer_key = test_chars_dict[test_char]
+                print(f"{test_char}")
                 print('--> ', end="")
+
                 input_key = readchar.readkey()
+
                 print("")
-                if test_key == input_key:
+                if answer_key == input_key:
                     COLOR = GREEN
                     mark = "o"
                     match_num = match_num + 1
@@ -110,7 +73,7 @@ while True:
                     miss_num = miss_num + 1
                 print('input key is ' +  f"{input_key}" + COLOR + f" ({mark})" + END )
                 now_time = datetime.now().strftime("%H:%M:%S")
-                writer.writerow([today, now_time, i, test_key, input_key, mark])            
+                writer.writerow([today, now_time, i, answer_key, input_key, mark])            
 
         time_end = time.time() # 計測終了
         time_type = time_end - time_start
