@@ -92,7 +92,7 @@ while True:
         match_num = 0
         miss_num = 0
 
-        time_start = time.time() # 時間計測開始
+        typing_start_time = time.time() # 時間計測開始
         for i in range(typing_num):
             test_char = random.choice(test_chars)
             answer_key = test_chars_dict[test_char]
@@ -104,18 +104,18 @@ while True:
             print("")
             if answer_key == input_key:
                 COLOR = GREEN
-                mark = "o"
+                mark = "O"
                 match_num = match_num + 1
             else:
                 COLOR = RED
-                mark = "x"
+                mark = "X"
                 miss_num = miss_num + 1
             
             print('input key is ' +  f"{input_key}" + COLOR + f" ({mark})" + END )
             write_typing(i, answer_key, input_key)
 
-        time_end = time.time() # 時間計測終了
-        typing_time = time_end - time_start # タイピング時間
+        typing_end_time = time.time() # 時間計測終了
+        typing_time = typing_end_time - typing_start_time # タイピング時間
         
         print_result(typing_num, match_num, miss_num, typing_time)
         write_result(typing_num, match_num, miss_num, typing_time)
