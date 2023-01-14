@@ -42,6 +42,28 @@ def print_result(typing_num, match_num, miss_num, typing_time):
     print("-"*80)
 
 
+def write_typing(num, answer, input):
+    """
+    """
+    now_date = date.today()
+    now_time = datetime.now().strftime("%H:%M:%S")
+
+    with open(TYPE_LOG_NAME, 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow([now_date, now_time, num, answer, input, answer==input])
+    
+
+def write_result(typing_num, match_num, miss_num, typing_time):
+    """
+    """
+    now_date = date.today()
+    now_time = datetime.now().strftime("%H:%M:%S")
+
+    with open(RESULT_LOG_NAME, 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow([now_date, now_time, typing_num, match_num, miss_num, typing_time, typing_num/typing_time])
+
+
 
 # -------------------------------------------------------------------
 # parse and get command options
@@ -53,6 +75,7 @@ if args.num:
     typing_num = int(args.num)
 else:
     typing_num = DEFAULT_TYPE_NUM
+
 
 # 練習文字の読み込み
 with open('alphabet.json', 'r') as f:
@@ -68,39 +91,34 @@ while True:
     if command_key == ' ':
         match_num = 0
         miss_num = 0
-        now_date = date.today()
-        with open(TYPE_LOG_NAME, 'a') as f:
-            writer = csv.writer(f)
 
-            time_start = time.time() # 時間計測開始
-            for i in range(typing_num):
-                test_char = random.choice(test_chars)
-                answer_key = test_chars_dict[test_char]
-                print(f"{test_char}")
-                print('--> ', end="")
+        time_start = time.time() # 時間計測開始
+        for i in range(typing_num):
+            test_char = random.choice(test_chars)
+            answer_key = test_chars_dict[test_char]
+            print(f"{test_char}")
+            print('--> ', end="")
 
-                input_key = readchar.readkey()
+            input_key = readchar.readkey()
 
-                print("")
-                if answer_key == input_key:
-                    COLOR = GREEN
-                    mark = "o"
-                    match_num = match_num + 1
-                else:
-                    COLOR = RED
-                    mark = "x"
-                    miss_num = miss_num + 1
-                print('input key is ' +  f"{input_key}" + COLOR + f" ({mark})" + END )
-                now_time = datetime.now().strftime("%H:%M:%S")
-                writer.writerow([now_date, now_time, i, answer_key, input_key, mark])            
+            print("")
+            if answer_key == input_key:
+                COLOR = GREEN
+                mark = "o"
+                match_num = match_num + 1
+            else:
+                COLOR = RED
+                mark = "x"
+                miss_num = miss_num + 1
+            
+            print('input key is ' +  f"{input_key}" + COLOR + f" ({mark})" + END )
+            write_typing(i, answer_key, input_key)
 
         time_end = time.time() # 時間計測終了
         typing_time = time_end - time_start # タイピング時間
-
+        
         print_result(typing_num, match_num, miss_num, typing_time)
-        with open(RESULT_LOG_NAME, 'a') as f:
-            writer = csv.writer(f)
-            writer.writerow([now_date, now_time, typing_num, match_num, miss_num, typing_time, typing_num/typing_time])
+        write_result(typing_num, match_num, miss_num, typing_time)
 
     elif command_key == 'q' or command_key == 'Q':
         break
